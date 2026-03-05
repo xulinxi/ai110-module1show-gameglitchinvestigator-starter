@@ -48,8 +48,13 @@ Claude helped design the range tests by suggesting `get_range_for_difficulty` as
 ## 4. What did you learn about Streamlit and state?
 
 - In your own words, explain why the secret number kept changing in the original app.
+The secret number kept changing because every time you clicked a button in Streamlit, the entire Python script re-ran from the top. That meant `random.randint()` was called again on every button click, generating a new secret number each time — so you could never actually win since the target kept moving.
+
 - How would you explain Streamlit "reruns" and session state to a friend who has never used Streamlit?
+Streamlit reruns your whole script every time the user interacts with anything — a button click, a text input, anything. Think of it like refreshing a webpage: all your variables reset. Session state (`st.session_state`) is how you save values across those reruns — it's like a small notebook Streamlit keeps for you between reloads. Anything stored in `st.session_state` survives the rerun, while regular variables get wiped.
+
 - What change did you make that finally gave the game a stable secret number?
+The fix was wrapping the secret number generation in a guard: `if "secret" not in st.session_state: st.session_state.secret = random.randint(low, high)`. This means the secret is only generated once — the first time the app loads — and stays the same for the rest of the game.
 
 ---
 
@@ -57,5 +62,10 @@ Claude helped design the range tests by suggesting `get_range_for_difficulty` as
 
 - What is one habit or strategy from this project that you want to reuse in future labs or projects?
   - This could be a testing habit, a prompting strategy, or a way you used Git.
+Writing unit tests alongside code changes is a habit I want to carry forward. This project showed that tests are most useful when written at the same time as the fix, because they force you to think precisely about the correct behavior. I also learned to be very specific in prompts, vague descriptions like "the ranges are wrong" led the AI to fix the wrong thing, while pointing directly at the file and function got faster, more accurate results. One more lesson: tests can pass even when functions are wrong, especially when they involve random numbers or when the expected values themselves are incorrect, so always verify assertions by hand.
+
 - What is one thing you would do differently next time you work with AI on a coding task?
+Next time I work with AI on a coding task, I would verify every generated test's expected values by hand before running them. This project had a case where the AI wrote tests that would pass even against buggy code because the expected values were wrong, tests that always pass give false confidence.
+
 - In one or two sentences, describe how this project changed the way you think about AI generated code.
+This project changed how I think about AI-generated code by showing that AI can introduce subtle bugs that look correct at first glance. AI is a useful starting point, but every suggestion needs to be read critically and verified, not just accepted because it looks reasonable.
