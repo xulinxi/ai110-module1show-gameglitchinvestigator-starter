@@ -31,7 +31,7 @@ It wrote the code, ran away, and now the game is unplayable.
 
 ## 📸 Demo
 
-- [x] ![pytest results showing 6 passed tests](/Users/xulinxi/Desktop/Screenshot 2026-03-04 at 10.55.16 PM.png)
+- [x] [<img width="742" height="170" alt="Screenshot 2026-03-04 at 10 55 16 PM" src="https://github.com/user-attachments/assets/52851ec4-ac6e-4b5f-94d2-d2fc5b432cc1" />]  
 
 ## 🚀 Stretch Features
 
