@@ -8,7 +8,9 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - List at least two concrete bugs you noticed at the start  
   (for example: "the secret number kept changing" or "the hints were backwards").
 
----
+  1. When the guess is lower than the secret number, the hint incorrectly says to go lower instead of higher.  
+  2. Easy mode go over 20. Need to check other modes' ranges too.
+  3. The hints do not update immediately — you have to guess twice before the feedback appears.
 
 ## 2. How did you use AI as a teammate?
 
@@ -16,14 +18,30 @@ Answer each question in 3 to 5 sentences. Be specific and honest about what actu
 - Give one example of an AI suggestion that was correct (including what the AI suggested and how you verified the result).
 - Give one example of an AI suggestion that was incorrect or misleading (including what the AI suggested and how you verified the result).
 
+I used Claude Code (Anthropic) as my AI teammate throughout this project.
+
+**Correct suggestion — identifying the every-other-guess hint bug:**
+Claude analyzed `app.py` lines 101–104 and correctly identified that on even-numbered attempts, the secret number was being cast to a string (`secret = str(st.session_state.secret)`), which caused `check_guess` to fall back to lexicographic string comparison instead of numeric comparison. This produced wrong hints on every other guess. I verified this by reading the code myself and confirming that `"9" > "50"` evaluates to `True` in Python string comparison, which would flip the hint direction.
+
+**Incorrect/misleading suggestion — swapping Normal and Hard test expectations:**
+When I reported that the difficulty ranges were wrong, Claude assumed the bug was in the *test file* and "corrected" the expected values — changing Normal's expected upper bound from 50 to 100, and Hard's from 100 to 50 — to match the buggy `logic_utils.py`. This was backwards: the tests were right and `logic_utils.py` was the source of the bug. I caught this by re-reading `logic_utils.py` directly and confirming that Normal and Hard ranges were swapped there, not in the tests.
+
 ---
 
 ## 3. Debugging and testing your fixes
 
 - How did you decide whether a bug was really fixed?
-- Describe at least one test you ran (manual or using pytest)  
+- Describe at least one test you ran (manual or using pytest)
   and what it showed you about your code.
 - Did AI help you design or understand any tests? How?
+
+I decided a bug was really fixed when the game behavior matched the expected outcome — correct hints, correct ranges displayed in the UI, and consistent results across attempts — not just when the code looked right.
+
+For the difficulty range bug, I wrote and ran three pytest tests in `tests/test_game_logic.py`: `test_easy_mode_range`, `test_normal_mode_range`, and `test_hard_mode_range`. Each called `get_range_for_difficulty()` directly and asserted the correct `(low, high)` tuple. When the Normal and Hard values were still swapped in `logic_utils.py`, the tests for those two modes failed, which confirmed exactly where the bug lived. Once I corrected the return values in `logic_utils.py`, all three tests passed.
+
+For the every-other-guess hint bug, I verified it by reading `app.py` and tracing through the logic manually: on odd attempts `secret` is an `int`, on even attempts it becomes a `str`, and Python's string comparison (`"9" > "50"` is `True`) produces the wrong result. I also visually confirmed the fix by running the game and submitting multiple guesses in a row to check that hints were consistent on every attempt, not just every other one.
+
+Claude helped design the range tests by suggesting `get_range_for_difficulty` as the right function to target and generating the initial test stubs. However, I had to verify and correct the expected values myself after Claude mistakenly swapped them, which reinforced the importance of reading test assertions carefully rather than trusting generated test code at face value.
 
 ---
 
