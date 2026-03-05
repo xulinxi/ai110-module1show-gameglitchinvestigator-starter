@@ -24,10 +24,20 @@ It wrote the code, ran away, and now the game is unplayable.
    - Keep fixing until all tests pass!
 
 ## 📝 Document Your Experience
+- [x] Describe the game's purpose.
+- [x] **Game purpose:** A number guessing game where the player tries to guess a secret number within a limited number of attempts. The difficulty setting controls the range of possible numbers and attempts allowed. The game gives hints after each guess to guide the player toward the answer.
 
-- [ ] Describe the game's purpose.
-- [ ] Detail which bugs you found.
-- [ ] Explain what fixes you applied.
+- [x] Detail which bugs you found.
+- [x] **Bugs found:**
+  1. Wrong hint direction on every other guess — the secret was cast to a string on even attempts, causing lexicographic comparison instead of numeric (e.g. `"9" > "50"` is `True` as strings), which flipped the hint.
+  2. Difficulty ranges were swapped — `logic_utils.py` returned `(1, 100)` for Normal and `(1, 50)` for Hard when the intended ranges are Normal = 1–50 and Hard = 1–100.
+  3. UI message and New Game button ignored difficulty — both hardcoded `1–100` regardless of the selected difficulty, so Easy mode (1–20) could still generate secrets up to 100.
+
+- [x] Explain what fixes you applied.
+- [x] **Fixes applied:**
+  - `logic_utils.py`: Corrected Normal to `(1, 50)` and Hard to `(1, 100)`.
+  - `app.py`: Replaced hardcoded `"1 and 100"` in the info message with `{low} and {high}`.
+  - `app.py`: Replaced `random.randint(1, 100)` in the New Game button with `random.randint(low, high)`.
 
 ## 📸 Demo
 
