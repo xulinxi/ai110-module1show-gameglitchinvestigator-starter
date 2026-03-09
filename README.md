@@ -58,12 +58,14 @@ It wrote the code, ran away, and now the game is unplayable.
     - `test_parse_guess_negative`, `test_parse_guess_zero` — now rejected by the `<1` range check
     - `test_parse_guess_out_of_range_high` — now rejected by the `>100` range check
   - **Total test count: 31 tests — all passing.**
-  - #TODO Screenshot
+  - <img width="1112" height="171" alt="Screenshot 2026-03-08 at 8 58 27 PM" src="https://github.com/user-attachments/assets/de63fefe-90b9-476b-92d5-b04bc7cda11b" />
+
 
 - [x] Challenge 2: Feature Expansion via Agent Mode
   - **Feature added:** Persistent High Score Tracker — saves the best score per difficulty to `high_score.json` and displays it in the sidebar.
   - **Agent's role:** Claude Code designed and implemented the full feature end-to-end in Agent Mode: added `load_high_scores` and `save_high_score` to `logic_utils.py`, wired the sidebar display and win-branch banner into `app.py`, and wrote 8 pytest tests covering edge cases (missing file, malformed JSON, updating only when better, multiple difficulties, equal score not overwritten). The agent also diagnosed a Streamlit input-delay issue caused by file I/O on every rerun and applied a `@st.cache_data` fix, clearing the cache after a win so the sidebar always reflects the latest record.
--- #TODO Screenshot
+  - <img width="281" height="260" alt="Screenshot 2026-03-08 at 2 38 00 PM" src="https://github.com/user-attachments/assets/e39679c8-9f64-4a7d-ad2c-ded30bfdac86" />
+
 
 - [x] Challenge 3: Professional Documentation and Linting
   - **Docstrings:** Every function in `logic_utils.py` received a full Google-style docstring with a one-line summary, behavior description, `Args:`, `Returns:`, and `Examples:` blocks — covering all six functions: `get_range_for_difficulty`, `parse_guess`, `check_guess`, `update_score`, `load_high_scores`, and `save_high_score`.
@@ -82,4 +84,5 @@ It wrote the code, ran away, and now the game is unplayable.
     - **Hot/Cold proximity indicator** — after each wrong guess, a `get_proximity_hint()` helper computes how close the guess is as a fraction of the difficulty range and returns a tiered emoji label: 🔥 Scorching! (≤5%), 🌡️ Warm (≤15%), 🧊 Chilly (≤35%), ❄️ Ice cold! (>35%). Only shown when the "Show hint" checkbox is checked.
     - **End-of-game summary table** — when the game ends (win or lose), `st.table` renders a full session log showing Attempt #, Guess, Result, Hot/Cold, and Score for every valid guess. Powered by a new `history_detail` session state list that is reset on New Game.
   - **Agent's role:** Claude Code implemented all three enhancements in `app.py`, introducing `get_proximity_hint()` as a pure helper and `history_detail` as a session state list, without modifying `check_guess`, `update_score`, `parse_guess`, or any logic in `logic_utils.py`.
-  - #TODO Screenshot
+  - <img width="784" height="717" alt="Screenshot 2026-03-08 at 8 52 49 PM" src="https://github.com/user-attachments/assets/875b18db-b72d-40ee-9854-fd38390f4650" />
+
