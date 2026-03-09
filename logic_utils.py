@@ -33,9 +33,9 @@ def get_range_for_difficulty(difficulty: str):
 def parse_guess(raw: str):
     """Parse raw user input into an integer guess.
 
-    Accepts plain integers ("42") and decimal strings ("5.6"), truncating
-    decimals toward zero via ``int(float(raw))``. Rejects None, empty strings,
-    and non-numeric input.
+    Accepts plain integers ("42") and decimal strings ("5.6"), rounding
+    half-up via ``int(float(raw) + 0.5)``. Rejects None, empty strings,
+    non-numeric input, and values outside the valid range of 1–100.
 
     Args:
         raw: The raw string entered by the user, or None if no input was given.
@@ -62,11 +62,17 @@ def parse_guess(raw: str):
 
     try:
         if "." in raw:
-            value = int(float(raw))
+            # Range validation below also rejects values outside 1–100 (e.g. "1.5e3").
+            value = int(float(raw) + 0.5)
         else:
             value = int(raw)
     except Exception:
         return False, None, "That is not a number."
+
+    if value < 1:
+        return False, None, "Guess must be at least 1."
+    if value > 100:
+        return False, None, "Guess must be 100 or less."
 
     return True, value, None
 

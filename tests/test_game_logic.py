@@ -113,22 +113,22 @@ def test_parse_guess_non_numeric():
     assert err == "That is not a number."
 
 
-def test_parse_guess_decimal_truncates():
-    # "5.6" currently silently truncates to 5 — documents existing behavior
+def test_parse_guess_decimal_rounds_half_up():
+    # "5.6" rounds half-up to 6 via int(float(raw) + 0.5)
     ok, value, err = parse_guess("5.6")
     assert ok is True
     assert value == 6
 
 
-def test_parse_guess_dot_five_becomes_zero():
-    # ".5" has a "." so goes through float path → int(0.5) = 1
+def test_parse_guess_dot_five_rounds_to_one():
+    # ".5" → float 0.5 + 0.5 = 1.0 → int 1; also passes the ≥1 range check
     ok, value, err = parse_guess(".5")
     assert ok is True
     assert value == 1
 
 
 def test_parse_guess_scientific_notation_with_dot():
-    # "1.5e3" contains "." and should be rejected with a warning
+    # "1.5e3" has "." so goes through float path → 1500, rejected by >100 range check
     ok, value, err = parse_guess("1.5e3")
     assert ok is False
     assert value is None
@@ -136,7 +136,7 @@ def test_parse_guess_scientific_notation_with_dot():
 
 
 def test_parse_guess_negative():
-    # Negative numbers are below the valid range and should be rejected with a warning
+    # "-3" parses to -3, rejected by the <1 range check
     ok, value, err = parse_guess("-3")
     assert ok is False
     assert value is None
@@ -144,7 +144,7 @@ def test_parse_guess_negative():
 
 
 def test_parse_guess_zero():
-    # Zero is below the minimum valid value (1) and should be rejected with a warning
+    # "0" parses to 0, rejected by the <1 range check (minimum valid value is 1)
     ok, value, err = parse_guess("0")
     assert ok is False
     assert value is None
@@ -152,7 +152,7 @@ def test_parse_guess_zero():
 
 
 def test_parse_guess_out_of_range_high():
-    # 999 is above any difficulty range and should be rejected with a warning
+    # "999" parses to 999, rejected by the >100 range check
     ok, value, err = parse_guess("999")
     assert ok is False
     assert value is None

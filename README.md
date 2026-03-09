@@ -48,7 +48,17 @@ It wrote the code, ran away, and now the game is unplayable.
 ## 🚀 Stretch Features
 
 - [x] Challenge 1: Advanced Edge Case Testing
--- #TODO Screenshot
+  - **Bugs fixed in `parse_guess`:**
+    - Decimal truncation — changed `int(float(raw))` to `int(float(raw) + 0.5)` so `"5.6"` → 6 and `".5"` → 1 (round half-up).
+    - Missing range validation — added post-parse checks that reject values below 1 (`"0"`, `"-3"`) and above 100 (`"999"`, `"1.5e3"`).
+  - **Updated edge-case tests** — existing `parse_guess` test comments and function names updated to reflect the fixed behavior:
+    - `test_parse_guess_decimal_rounds_half_up` — documents the round-half-up fix for `"5.6"` → 6
+    - `test_parse_guess_dot_five_rounds_to_one` — clarifies that `".5"` → 1 via `0.5 + 0.5 = 1.0`, not truncation
+    - `test_parse_guess_scientific_notation_with_dot` — now rejected by the `>100` range check (1500), not a parse error
+    - `test_parse_guess_negative`, `test_parse_guess_zero` — now rejected by the `<1` range check
+    - `test_parse_guess_out_of_range_high` — now rejected by the `>100` range check
+  - **Total test count: 31 tests — all passing.**
+  - #TODO Screenshot
 
 - [x] Challenge 2: Feature Expansion via Agent Mode
   - **Feature added:** Persistent High Score Tracker — saves the best score per difficulty to `high_score.json` and displays it in the sidebar.
